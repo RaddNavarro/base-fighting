@@ -1,11 +1,21 @@
+SCREEN_WIDTH = 900
+SCREEN_HEIGHT = 600
+
+lick = require "lick"
+lick.reset = true
+
+local  PIXELS_PER_METER = 100
+--makes the world and gravity
+local world = love.physics.newWorld(0,10 * PIXELS_PER_METER)
+
 --containers
 player = {
-    x = 400,
+    x = 100,
     y = 200,
     w = 100,
     h = 100,
     radius = 100,
-    speed = 300,
+    speed = 900,
 }
 
 platform = {
@@ -15,9 +25,7 @@ platform = {
     h = 100,
 }
 
-local  PIXELS_PER_METER = 100
---makes the world and gravity
-local world = love.physics.newWorld(0,10 * PIXELS_PER_METER)
+
 
 function love.load()
     player.body = love.physics.newBody(world,player.x,player.y,"dynamic")
@@ -29,6 +37,9 @@ function love.load()
     platform.shape = love.physics.newRectangleShape(platform.w/2, platform.h/2, platform.w, platform.h)
     platform.fixture = love.physics.newFixture(platform.body, platform.shape)
     platform.body:setFixedRotation(true)
+
+    --screens size
+    love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT, {fullscreen = false, vsync = true})
 end
 
 function love.update(dt)
@@ -46,7 +57,7 @@ function love.update(dt)
 
     if love.keyboard.isDown('s') then
         deltaY = player.speed
-    elseif love.keyboard.isDown('w') then
+    elseif love.keyboard.isDown('space') then
         deltaY = - player.speed
     end
     
