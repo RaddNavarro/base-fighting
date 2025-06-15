@@ -4,9 +4,37 @@ SCREEN_HEIGHT = 600
 lick = require "lick"
 lick.reset = true
 
+local message = ""
+
 local  PIXELS_PER_METER = 100
 --makes the world and gravity
 local world = love.physics.newWorld(0,10 * PIXELS_PER_METER)
+
+
+
+function OnCollisionEnter(a, b, contact)
+    local object1, object2 = a:getUserData(), b:getUserData()
+
+    if object1 and object2 then
+        object2.canDoubleJump = false
+        -- message = object1.tag .. " collided with " .. object2.tag .. " player can " .. tostring(object2.canDoubleJump) 
+        object2.isGrounded = true
+    end
+end
+
+
+function OnCollisionExit(a, b, contact)
+    local object1, object2 = a:getUserData(), b:getUserData()
+
+    if object1 and object2 then
+        object2.canDoubleJump = true
+        -- message = object1.tag .. " out of " .. object2.tag .. " player can " .. tostring(object2.canDoubleJump) 
+        object2.isGrounded = false
+    end
+end
+
+
+world:setCallbacks(OnCollisionEnter, OnCollisionExit)
 
 --containers
 player = {
@@ -16,6 +44,10 @@ player = {
     h = 100,
     radius = 100,
     speed = 900,
+    tag = "player",
+    isGrounded = true,
+    canDoubleJump = false,
+    jump = 500,
 }
 
 platform = {
@@ -23,7 +55,9 @@ platform = {
     y = 400,
     w = 800,
     h = 100,
+    tag = "platform"
 }
+
 
 
 
@@ -32,11 +66,13 @@ function love.load()
     player.shape = love.physics.newCircleShape(player.radius)
     player.fixture = love.physics.newFixture(player.body, player.shape)
     player.body:setFixedRotation(true)
+    player.fixture:setUserData(player)
 
     platform.body = love.physics.newBody(world,platform.x,platform.y,"static")
     platform.shape = love.physics.newRectangleShape(platform.w/2, platform.h/2, platform.w, platform.h)
     platform.fixture = love.physics.newFixture(platform.body, platform.shape)
     platform.body:setFixedRotation(true)
+    platform.fixture:setUserData(platform)
 
     --screens size
     love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT, {fullscreen = false, vsync = true})
@@ -57,9 +93,15 @@ function love.update(dt)
 
     if love.keyboard.isDown('s') then
         deltaY = player.speed
-    elseif love.keyboard.isDown('space') then
-        deltaY = - player.speed
+    elseif love.keyboard.isDown('space') and player.isGrounded then
+        deltaY = - player.jump
+
+        if player.canDoubleJump == true then
+            deltaY = - player.jump
+        end
     end
+
+    
     
     player.body:setLinearVelocity(deltaX,deltaY)
 
@@ -71,5 +113,7 @@ end
 function love.draw()
     love.graphics.circle("fill", player.x, player.y, player.radius)
     love.graphics.rectangle("fill", platform.x, platform.y, platform.w, platform.h)
+
+    love.graphics.print(message, 50, 50)
 
 end
