@@ -1,5 +1,8 @@
 Player = {}
 
+message = ""
+
+
 function Player:load()
     self.x = 100
     self.y = 200
@@ -7,7 +10,7 @@ function Player:load()
     self.h = 100
     self.yVelocity = 0
     self.xVelocity = 0
-    self.radius = 100
+    self.radius = 50
     self.maxSpeed = 500
     self.acceleration = 4000
     self.friction = 3500
@@ -140,7 +143,7 @@ end
 
 function Player:endContact(a, b, collision)
     if a == self.physics.fixture or b == self.physics.fixture then
-        if self.currentGroundCollision == true then
+        if self.currentGroundCollision == collision then
             self.isGrounded = false
         end
     end
