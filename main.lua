@@ -27,11 +27,7 @@ function love.load()
 	World = love.physics.newWorld(0, 0)
 	World:setCallbacks(beginContact, endContact)
 	Player:load()
---  oldWidth, oldHeight = love.graphics.getWidth(), love.graphics.getHeight()
---  newWidth, newHeight = 960, 640
---  love.window.setMode(newWidth, newHeight)
---  xScale = newWidth / oldWidth
---  yScale = newHeight / oldHeight
+	gameMap:resize(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 --	Platform:load()
 
@@ -58,10 +54,6 @@ function love.keypressed(key)
 end
 
 function love.draw()
---  dx = 800 / 2 / xScale
---  dy= 600 / 2 / yScale
---  love.graphics.scale(xScale, yScale)
---  love.graphics.print(love.graphics.getWidth() .. love.graphics.getHeight())
 	Player:draw()
 	-- Platform:draw()
 	gameMap:draw()
