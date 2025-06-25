@@ -5,11 +5,12 @@ lick = require("lick")
 require("player")
 require("platform")
 require("map")
+require("ground")
 
 lick.reset = true
 
-sti = require 'sti'
-gameMap = sti('maps/testMap3.lua')
+sti = require("sti")
+gameMap = sti("maps/testMap3.lua")
 --local tiles = {
 --  0, 1, 0, 0, 0, 0, 0, 0,
 --  0, 0, 0, 0, 0, 0, 0, 0,
@@ -28,11 +29,11 @@ function love.load()
 	World:setCallbacks(beginContact, endContact)
 	Player:load()
 	gameMap:resize(SCREEN_WIDTH, SCREEN_HEIGHT)
-
---	Platform:load()
+	Ground:load()
+	--	Platform:load()
 
 	--screens size
-  love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT, { fullscreen = false, vsync = true })
+	love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT, { fullscreen = false, vsync = true })
 end
 
 function love.update(dt)
@@ -56,6 +57,6 @@ end
 function love.draw()
 	Player:draw()
 	-- Platform:draw()
-	gameMap:draw()
+	gameMap:drawLayer(gameMap.layers["Tile Layer 1"])
 	--gMap:Render()
 end
